@@ -25,6 +25,11 @@ mutedblack = "#1a1a1a"
 
 from hetbuilder.utils import plot_atoms
 
+from pymatgen.core import Structure, Lattice
+from pymatgen.io.vasp.inputs import Poscar
+from pymatgen.io.ase import AseAtomsAdaptor
+
+
 # from ase.visualize.plot import plot_atoms
 
 
@@ -288,28 +293,57 @@ class InteractivePlot:
 
         fig.canvas.mpl_connect("pick_event", self.__onpick)
 
+#        def __save(stack):
+#            try:
+#                sc = self.current_scdata
+#                form = self.current_stack.get_chemical_formula()
+#                info_string = []
+#                info_string.append(form)
+#                M = [sc.m1, sc.m2, sc.m3, sc.m4]
+#                N = [sc.n1, sc.n2, sc.n3, sc.n4]
+#                a = sc.angle
+#                s1 = sc.stress
+#                s2 = sc.strain
+#                info_string.append("M = [{} {} // {} {}]".format(*M))
+#                info_string.append("N = [{} {} // {} {}]".format(*N))
+#                info_string.append(f"angle = {a:.4f} [degree]")
+#                info_string.append(f"stress = {s1:.4f} [%]")
+#                info_string.append(f"strain = {s2:.4f} [%]")
+#                index = sc.index
+#                name = "{}_{:.2f}_degree_{}.in".format(form, a, index)
+#                stack.write(name, info_str=info_string, format="aims")
+#                logger.info("Saved structure to {}".format(name))
+#            except Exception as excpt:
+#                logger.error("You need to select a point first.")
+          
         def __save(stack):
             try:
+                # 获取当前的SuperCellData和化学式信息
                 sc = self.current_scdata
                 form = self.current_stack.get_chemical_formula()
-                info_string = []
-                info_string.append(form)
-                M = [sc.m1, sc.m2, sc.m3, sc.m4]
-                N = [sc.n1, sc.n2, sc.n3, sc.n4]
-                a = sc.angle
-                s1 = sc.stress
-                s2 = sc.strain
-                info_string.append("M = [{} {} // {} {}]".format(*M))
-                info_string.append("N = [{} {} // {} {}]".format(*N))
-                info_string.append(f"angle = {a:.4f} [degree]")
-                info_string.append(f"stress = {s1:.4f} [%]")
-                info_string.append(f"strain = {s2:.4f} [%]")
-                index = sc.index
-                name = "{}_{:.2f}_degree_{}.in".format(form, a, index)
-                stack.write(name, info_str=info_string, format="aims")
-                logger.info("Saved structure to {}".format(name))
+
+                # 使用AseAtomsAdaptor转换ASE的Atoms到pymatgen的Structure
+                adaptor = AseAtomsAdaptor()
+                structure = adaptor.get_structure(stack)  # 注意：ase中的stack为笛卡尔坐标
+
+                # 正确设置文件名，包括角度、化学式等
+                M = f"[{sc.m1} {sc.m2} // {sc.m3} {sc.m4}]"
+                N = f"[{sc.n1} {sc.n2} // {sc.n3} {sc.n4}]"
+                angle = f"{sc.angle:.4f}"
+                stress = f"{sc.stress:.4f}"
+                strain = f"{sc.strain:.4f}"
+                index = f"{sc.index}"
+                name = f"{form}_{angle}_degree_{index}.vasp"
+
+                # 保存为VASP的POSCAR文件
+                structure.to(fmt="poscar", filename=name)
+
+                # 记录详细信息
+                print(f"Saved structure to {name} with M = {M}, N = {N}, stress = {stress}, strain = {strain}")
+
             except Exception as excpt:
-                logger.error("You need to select a point first.")
+                print(f"You need to select a point first. Error: {excpt}")
+                
 
         save = Button(axbutton, " Save this structure. ")
         save.on_clicked(lambda x: __save(self.current_stack))

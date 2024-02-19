@@ -80,7 +80,7 @@ def find_periodic_axes(atoms: "ase.atoms.Atoms") -> dict:
         atoms: ase.atoms.Atoms object.
 
     Note:
-        A criterion is a vacuum space of more than 25.0 Anström.
+        A criterion is a vacuum space of more than 10.0 Anström.
 
     Returns:
         dict: Axis : Bool pairs.
@@ -106,7 +106,8 @@ def find_periodic_axes(atoms: "ase.atoms.Atoms") -> dict:
                         k[1] - l[0] - sc.cell.lengths()[axes]
                     )  # check if fragments are separated by a simple translation
                     nd = np.min([d1, d2])
-                    if nd >= 25.0:
+                    #if nd >= 25.0:
+                    if nd >= 10.0:
                         pbc[axes] = False
                         break
     return pbc

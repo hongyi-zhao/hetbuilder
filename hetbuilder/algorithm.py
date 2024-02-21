@@ -13,7 +13,7 @@ import numpy as np
 from scipy.linalg import polar
 
 from hetbuilder.log import *
-from hetbuilder.atom_checks import check_atoms, recenter
+from hetbuilder.atom_checks import check_atoms, recenter, recenter_to_bottom
 
 from ase.neighborlist import (
     NeighborList,
@@ -177,9 +177,12 @@ class Interface:
         top = cpp_atoms_to_ase_atoms(interface.top)
         stack = cpp_atoms_to_ase_atoms(interface.stack)
 
-        self.bottom = recenter(bottom)
-        self.top = recenter(top)
-        self.stack = recenter(stack)
+        #self.bottom = recenter(bottom)
+        #self.top = recenter(top)
+        #self.stack = recenter(stack)
+        self.bottom = bottom
+        self.top = top
+        self.stack = recenter_to_bottom(stack)
         self.M = [[j for j in k] for k in interface.M]
         self.N = [[j for j in k] for k in interface.N]
         self.angle = interface.angle

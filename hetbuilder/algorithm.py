@@ -292,6 +292,7 @@ class CoincidenceAlgorithm:
         tolerance: float = 0.1,
         weight: float = 0.5,
         distance: float = 4,
+        vacuum: float = 15,
         standardize: bool = False,
         no_idealize: bool = False,
         symprec: float = 1e-5,
@@ -309,6 +310,7 @@ class CoincidenceAlgorithm:
             tolerance (float): Tolerance criterion to accept lattice match. Corresponds to a distance in Angström. Defaults to 0.1.
             weight (float): The coincidence unit cell is C = A + weight * (B-A). Defaults to 0.5.
             distance (float): Interlayer distance of the stacks. Defaults to 4.0 Angström.
+            vacuum (float): Thickness of the vacuum layer of the stacks. Defaults to 15.0 Angström.
             standardize (bool): Perform spglib standardization. Defaults to true.
             no_idealize (bool): Does not idealize unit cell parameters in the spglib standardization routine. Defaults to False.
             symprec (float): Symmetry precision for spglib. Defaults to 1e-5 Angström.
@@ -336,6 +338,7 @@ class CoincidenceAlgorithm:
         assert Nmin >= 0, "Nmin must be larger than or equal 0."
         assert Nmax > 0, "Nmax must be larger than 0."
         assert distance > 0, "Interlayer distance must be larger than zero."
+#        assert vacuum >= 10, "Thickness of the vacuum layer must be larger than or equal to 10 Anström."
         assert tolerance > 0, "Tolerance must be larger than zero."
         assert (
             angle_tolerance >= 0
@@ -360,6 +363,7 @@ class CoincidenceAlgorithm:
             tolerance,
             weight,
             distance,
+            vacuum,
             standardize,
             no_idealize,
             symprec,

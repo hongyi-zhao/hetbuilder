@@ -32,7 +32,7 @@ public:
 
     angle_dict_t reduce_unique_pairs(std::map<double, int2dvec_t> &AnglesMN, pBar &bar);
 
-    std::vector<Interface> build_all_supercells(Atoms &bottom, Atoms &top, angle_dict_t &AnglesMN, double &weight, double &distance, pBar &bar);
+    std::vector<Interface> build_all_supercells(Atoms &bottom, Atoms &top, angle_dict_t &AnglesMN, double &weight, double &distance, double &vacuum, pBar &bar);
 
     std::vector<Interface> filter_supercells(std::vector<Interface> &stacks, pBar &bar);
 
@@ -42,6 +42,7 @@ public:
                                double cTolerance = 0.01,
                                double cWeight = 0.5,
                                double cDistance = 4.0,
+                               double cVacuum = 15.0,
                                bool cStandardize = true,
                                int cNoIdealize = 0,
                                double cSymPrec = 1e-5,

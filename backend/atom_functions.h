@@ -7,4 +7,4 @@ Atoms make_supercell(Atoms &prim, int2dvec_t &superCellMatrix);
 
 Atoms rotate_atoms_around_z(Atoms &atoms, double &theta);
 
-Atoms stack_atoms(Atoms bottom, Atoms top, double &weight, double &distance);
+Atoms stack_atoms(Atoms bottom, Atoms top, double &weight, double &distance, double &vacuum);

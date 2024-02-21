@@ -90,7 +90,10 @@ def build(
         help="Weight of the coincidence unit cell, given by C=A+weight*(B-A).",
     ),
     distance: float = typer.Option(
-        4, "-d", "--distance", help="Interlayer distance of the heterostructure."
+        4, "-d", "--distance", help="Interlayer distance of the heterostructure in Angström."
+    ),
+    vacuum: float = typer.Option(
+        15, "-v", "--vacuum", help="Thickness of the vacuum layer of the heterostructure in Angström."
     ),
     no_idealize: bool = typer.Option(
         False, "--no_idealize", help="Disable idealize lattice parameters via spglib."
@@ -102,7 +105,7 @@ def build(
         5, "--angle_tolerance", help="Angle tolerance for spglib."
     ),
     verbosity: int = typer.Option(
-        1, "--verbosity", "-v", count=True, help="Set verbosity level."
+        1, "--verbosity", "-V", count=True, help="Set verbosity level."
     ),
 ) -> None:
     """Builds heterostructure interface for given choice of parameters.
@@ -128,6 +131,7 @@ def build(
         angle_stepsize=angle_stepsize,
         tolerance=tolerance,
         distance=distance,
+        vacuum=vacuum,
         no_idealize=no_idealize,
         symprec=symprec,
         angle_tolerance=angle_tolerance,
@@ -166,8 +170,11 @@ def match(
         help="Weight of the coincidence unit cell, given by C=A+weight*(B-A).",
     ),
     distance: float = typer.Option(
-        4, "-d", "--distance", help="Interlayer distance of the heterostructure."
+        4, "-d", "--distance", help="Interlayer distance of the heterostructure in Angström."
     ),
+    vacuum: float = typer.Option(
+        15, "-v", "--vacuum", help="Thickness of the vacuum layer of the heterostructure in Angström."
+    ),    
     no_idealize: bool = typer.Option(
         False, "--no_idealize", help="Disable idealize lattice parameters via spglib."
     ),
@@ -178,7 +185,7 @@ def match(
         5, "--angle_tolerance", help="Angle tolerance for spglib."
     ),
     verbosity: int = typer.Option(
-        1, "--verbosity", "-v", count=True, help="Set verbosity level."
+        1, "--verbosity", "-V", count=True, help="Set verbosity level."
     ),
 ):
     """Matches two structures to find lowest-stress coincidence lattice.
@@ -204,6 +211,7 @@ def match(
         tolerance_stepsize=0.05,
         max_tolerance=0.2,
         distance=distance,
+        vacuum=vacuum,
         angles=angles,
         no_idealize=no_idealize,
         symprec=symprec,
@@ -226,6 +234,7 @@ def match(
                 angles=angles,
                 tolerance=t,
                 distance=distance,
+                vacuum=vacuum,
                 no_idealize=no_idealize,
                 symprec=symprec,
                 angle_tolerance=angle_tolerance,

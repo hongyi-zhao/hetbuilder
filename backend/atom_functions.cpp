@@ -258,7 +258,7 @@ std::tuple<double, double> get_min_max_z(Atoms &atoms)
  *
  * The new unit cell is given by C = A + weight * (B - A).
  */
-Atoms stack_atoms(Atoms bottom, Atoms top, double &weight, double &distance)
+Atoms stack_atoms(Atoms bottom, Atoms top, double &weight, double &distance, double &vacuum)
 {
     // need to make sure that both cells have the same initial c length (probably from python)
     auto [min_z1, max_z1] = get_min_max_z(bottom);
@@ -283,6 +283,6 @@ Atoms stack_atoms(Atoms bottom, Atoms top, double &weight, double &distance)
     bottom.scale_cell(newcell);
     top.scale_cell(newcell);
     Atoms stack = bottom + top;
-    stack.lattice[2][2] = bottom_thickness + top_thickness + distance + 50.0;
+    stack.lattice[2][2] = bottom_thickness + top_thickness + distance + vacuum;
     return stack;
 };

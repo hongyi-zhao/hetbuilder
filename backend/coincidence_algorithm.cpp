@@ -175,7 +175,7 @@ angle_dict_t CoincidenceAlgorithm::reduce_unique_pairs(std::map<double, int2dvec
  * Returns a vector of interfaces.
  */
 std::vector<Interface> CoincidenceAlgorithm::build_all_supercells(Atoms &bottom, Atoms &top, angle_dict_t &AnglesMN,
-                                                                  double &weight, double &distance, pBar &bar)
+                                                                  double &weight, double &distance, double &vacuum, pBar &bar)
 {
     std::vector<Interface> stacks;
     for (auto i = AnglesMN.begin(); i != AnglesMN.end(); ++i)
@@ -191,7 +191,7 @@ std::vector<Interface> CoincidenceAlgorithm::build_all_supercells(Atoms &bottom,
             Atoms bottomLayer = make_supercell(bottom, M);
             Atoms topLayer = make_supercell(top, N);
             Atoms topLayerRot = rotate_atoms_around_z(topLayer, theta);
-            Atoms interface = stack_atoms(bottomLayer, topLayerRot, weight, distance);
+            Atoms interface = stack_atoms(bottomLayer, topLayerRot, weight, distance, vacuum);
             Interface stack(bottomLayer, topLayerRot, interface, theta, M, N, 1);
 #pragma omp ordered
             stacks.push_back(stack);
@@ -234,6 +234,7 @@ std::vector<Interface> CoincidenceAlgorithm::run(int Nmax,
                                                  double tolerance,
                                                  double weight,
                                                  double distance,
+                                                 double vacuum,
                                                  bool standardize,
                                                  int no_idealize,
                                                  double symprec,
@@ -303,6 +304,7 @@ std::vector<Interface> CoincidenceAlgorithm::run(int Nmax,
                                       fAnglesMN,
                                       weight,
                                       distance,
+                                      vacuum,
                                       bar);
 
         if (verbose > 0)

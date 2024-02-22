@@ -112,8 +112,6 @@ def find_periodic_axes(atoms: "ase.atoms.Atoms") -> dict:
                         break
     return pbc
 
-# 这里定义的操作对 cell 的修改，是发生在 atom_functions.cpp 中的操作之后的。
-# 按照我后来基于 scale_cell_xy 的方法实现后，这个已经不需要了：
 def recenter(atoms: "ase.atoms.Atoms") -> "ase.atoms.Atoms":
     """Recenters atoms to be in the unit cell, with vacuum on both sides.
     The unit cell length c is always chosen such that it is larger than a and b.
@@ -148,16 +146,16 @@ def recenter(atoms: "ase.atoms.Atoms") -> "ase.atoms.Atoms":
     z_pos = newpos[:, 2]
     span = np.max(z_pos) - np.min(z_pos)
     newcell[0, 2] = newcell[1, 2] = newcell[2, 0] = newcell[2, 1] = 0.0
-#    newcell[2, 2] = span + 100.0
+    newcell[2, 2] = span + 100.0
     axes = [0, 1, 2]
     lengths = np.linalg.norm(newcell, axis=1)
     order = [x for x, y in sorted(zip(axes, lengths), key=lambda pair: pair[1])]
-#    while True:
-#        if (order == [0, 1, 2]) or (order == [1, 0, 2]):
-#            break
-#        newcell[2, 2] += 10.0
-#        lengths = np.linalg.norm(newcell, axis=1)
-#        order = [x for x, y in sorted(zip(axes, lengths), key=lambda pair: pair[1])]
+    while True:
+        if (order == [0, 1, 2]) or (order == [1, 0, 2]):
+            break
+        newcell[2, 2] += 10.0
+        lengths = np.linalg.norm(newcell, axis=1)
+        order = [x for x, y in sorted(zip(axes, lengths), key=lambda pair: pair[1])]
     newpos = newscal @ newcell
     newpos[:, 2] = z_pos
     atoms = ase.Atoms(positions=newpos, numbers=numbers, cell=newcell, pbc=atoms.pbc)

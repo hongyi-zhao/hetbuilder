@@ -179,6 +179,9 @@ class Interface:
         # First, ensure all atoms are within the unit cell boundaries.
         stack.wrap(pretty_translation=True)
 
+        # 这里原来使用了 recenter，而这里的结构是基于 atom_functions.cpp 中的结果进行后续操作并最终决定了输出的结构。
+        # 我在 atom_functions.cpp 中的基于 scale_cell_xy 方法的处理逻辑已经足够，而不能在这里继续使用 recenter，否则将导致 `--vacuum` 参数无效。
+
         self.bottom = bottom
         self.top = top
         self.stack = stack
@@ -271,6 +274,7 @@ class CoincidenceAlgorithm:
     """
 
     def __init__(self, bottom: "ase.atoms.Atoms", top: "ase.atoms.Atoms") -> None:
+        # 这里的 check_atoms 用于对输入结构做必要的检查、确认和预处理，该函数调用了 recenter：
         self.bottom = check_atoms(bottom)
         self.top = check_atoms(top)
         _, self.bdl = get_bond_data(bottom)

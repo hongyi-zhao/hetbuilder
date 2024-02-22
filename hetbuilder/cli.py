@@ -6,7 +6,6 @@ from typing import Optional, Tuple, List
 
 from hetbuilder import __version__, CoincidenceAlgorithm, Interface, InteractivePlot
 from hetbuilder.log import logger, set_verbosity_level
-from hetbuilder.atom_checks import check_atoms
 
 from pathlib import Path
 

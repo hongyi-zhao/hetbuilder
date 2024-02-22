@@ -35,7 +35,7 @@ pip install hetbuilder
 
 Install directly from git via pip:
 ```bash
-pip install git+https://github.com/romankempt/hetbuilder.git
+pip install git+https://github.com/hongyi-zhao/hetbuilder.git
 ```
 
 #### Development Installation with Anaconda

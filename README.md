@@ -19,40 +19,40 @@ Otherwise, these will be built during the installation from the submodules.
 
 Create a clean conda environment:
 ```bash
-conda env create -n hetbuilder python=3.11
+$ conda env create -n hetbuilder python=3.11
 ```
 
 Then install the build-time dependencies first:
 ```bash
-conda install -c conda-forge compilers git pip cmake scikit-build spglib pybind11
+$ conda install -c conda-forge compilers git pip cmake scikit-build spglib pybind11
 ```
 
 <!-- Then, you can install the project from pip:
 ```bash
-pip install hetbuilder
+$ pip install hetbuilder
 ```
 -->
 
 Install directly from git via pip:
 ```bash
-pip install git+https://github.com/hongyi-zhao/hetbuilder.git
+$ pip install git+https://github.com/hongyi-zhao/hetbuilder.git
 ```
 
 #### Development Installation with Anaconda (or use pyenv, venv, etc.)
 
 After creating the same environment, install `conda-build`:
 ```bash
-conda install conda-build
+$ conda install conda-build
 ```
 
 Download or clone the github repository. Then, `cd` to the repository and
 ```bash
-pip install -r requirements.txt
-conda develop .
-mkdir build
-cd build
-cmake .. && make
-cp hetbuilder_backend.*.so ../hetbuilder/
+$ pip install -r requirements.txt
+$ conda develop .
+$ mkdir build
+$ cd build
+$ cmake .. && make
+$ cp hetbuilder_backend.*.so ../hetbuilder/
 ```
 
 The last step is necessary so that the C++ extension is found in the module directory.
@@ -62,14 +62,15 @@ The last step is necessary so that the C++ extension is found in the module dire
 The installation exposes a multi-level [typer](https://github.com/tiangolo/typer) CLI utility called `hetbuilder`:
 
 ```bash
-hetbuilder --help
+$ hetbuilder --help
 ```
 
 The `build` utility is fully implemented.
 You can use any ASE-readable structure format to specify the lower and upper layer. They should be recognizable as two-dimensional, e.g., by having a zero vector in the *z*-direction.
 
 ```bash
-hetbuilder build graphene.xyz MoS2.cif
+$ cd tests
+$ hetbuilder build -t0.15 graphene.xyz MoS2_2H_1L.xyz
 ```
 
 This should open a [matplotlib](https://matplotlib.org/) interface looking like this:
@@ -86,7 +87,7 @@ Documentation is available at [Read the Docs](https://hetbuilder.readthedocs.io/
 Tests can be run in the project directory with
 
 ```bash
-pytest -v tests
+$ pytest -v tests
 ```
 
 ## Citing

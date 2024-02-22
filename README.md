@@ -38,7 +38,7 @@ Install directly from git via pip:
 pip install git+https://github.com/hongyi-zhao/hetbuilder.git
 ```
 
-#### Development Installation with Anaconda
+#### Development Installation with Anaconda (or use pyenv, venv, etc.)
 
 After creating the same environment, install `conda-build`:
 ```bash

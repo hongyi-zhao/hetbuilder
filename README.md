@@ -15,7 +15,7 @@ Requires a C++17 compiler and [cmake](https://cmake.org/).
 It is also recommended to preinstall [spglib](https://atztogo.github.io/spglib/python-spglib.html) and [pybind11](https://github.com/pybind/pybind11).
 Otherwise, these will be built during the installation from the submodules.
 
-#### Installing with Anaconda
+#### Installing with Anaconda (or use pyenv, venv, etc.)
 
 Create a clean conda environment:
 ```bash

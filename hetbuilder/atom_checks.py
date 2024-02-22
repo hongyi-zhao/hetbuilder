@@ -112,7 +112,8 @@ def find_periodic_axes(atoms: "ase.atoms.Atoms") -> dict:
                         break
     return pbc
 
-
+# 这里定义的操作对 cell 的修改，是发生在 atom_functions.cpp 中的操作之后的。
+# 按照我后来基于 scale_cell_xy 的方法实现后，这个已经不需要了：
 def recenter(atoms: "ase.atoms.Atoms") -> "ase.atoms.Atoms":
     """Recenters atoms to be in the unit cell, with vacuum on both sides.
     The unit cell length c is always chosen such that it is larger than a and b.
@@ -161,49 +162,6 @@ def recenter(atoms: "ase.atoms.Atoms") -> "ase.atoms.Atoms":
     newpos[:, 2] = z_pos
     atoms = ase.Atoms(positions=newpos, numbers=numbers, cell=newcell, pbc=atoms.pbc)
     return atoms
-
-
-def recenter_to_bottom(atoms: "ase.atoms.Atoms") -> "ase.atoms.Atoms":
-    """Recenters atoms to be at the bottom of the unit cell, with vacuum on the top.
-
-    The unit cell length c is adapted such that it accommodates all atoms comfortably at the bottom,
-    leaving ample vacuum space above.
-
-    Args:
-        atoms (ase.atoms.Atoms): The atoms object to be recentered.
-
-    Returns:
-        ase.atoms.Atoms: The modified atoms object with atoms recentered to the bottom.
-    """
-    # First, ensure all atoms are within the unit cell boundaries.
-    atoms = atoms.copy()
-    atoms.wrap(pretty_translation=True)
-
-    # Get current positions and the z-span of the atoms.
-    pos = atoms.get_positions(wrap=False)
-    z_min = np.min(pos[:, 2])
-    z_max = np.max(pos[:, 2])
-    z_span = z_max - z_min
-
-    # Calculate the new height of the unit cell to include vacuum space above.
-    # Here, we add an extra 50 units of vacuum space, but this can be adjusted as needed.
-    #new_z_height = z_span + 50.0
-
-    # Shift all atoms down to the bottom of the cell.
-    pos[:, 2] -= z_min  # Shifts the bottom atom to z=0
-
-    # Apply the new positions back to the atoms object.
-    atoms.set_positions(pos)
-
-    # Now, update the cell dimensions, specifically the z-axis to accommodate the new height.
-    newcell = atoms.cell.copy()
-    #newcell[2, 2] = new_z_height
-    atoms.set_cell(newcell, scale_atoms=False)
-
-    return atoms
-
-
-
 
 def check_if_2d(atoms: "ase.atoms.Atoms") -> bool:
     """Evaluates if structure is qualitatively two-dimensional.

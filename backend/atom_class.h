@@ -87,7 +87,8 @@ public:
 
     double2dvec_t scaled_positions_to_cartesian(double2dvec_t &scalpos);
 
-    void scale_cell(double2dvec_t &newcell);
+/*    void scale_cell(double2dvec_t &newcell);*/
+    void scale_cell_xy(double2dvec_t &newcell);
 
     Atoms operator+(const Atoms &b);
 

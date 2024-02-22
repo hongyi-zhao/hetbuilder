@@ -48,7 +48,7 @@ PYBIND11_MODULE(hetbuilder_backend, m)
         .def_readwrite("magmoms", &Atoms::magmoms)
         .def("standardize", &Atoms::standardize, "Spglib standardization.")
         .def("print", &Atoms::print, py::call_guard<py::scoped_ostream_redirect, py::scoped_estream_redirect>(), "Print information.")
-        .def("scale_cell", &Atoms::scale_cell, "Scales cell.")
+        .def("scale_cell_xy", &Atoms::scale_cell_xy, "Scales cell in xy plane.")
         .def("compare", &Atoms::xtalcomp_compare, "Performs XtalComp check if two Atoms are equivalent.")
         .def("get_index_mapping", &Atoms::get_index_mapping, "Returns index mapping in supercell.");
 

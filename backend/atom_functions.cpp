@@ -260,7 +260,9 @@ std::tuple<double, double> get_min_max_z(Atoms &atoms)
  */
 Atoms stack_atoms(Atoms bottom, Atoms top, double &weight, double &distance, double &vacuum)
 {
-    // need to make sure that both cells have the same initial c length (probably from python)
+ 
+//  scale_cell_xy 函数中实现了保持z方向笛卡尔坐标不变的逻辑，那么确保两个晶胞在开始时具有相同的初始c轴长度就不再是必需的。
+//    因为即使两个晶胞在z方向上的长度不同，经过 scale_cell_xy 函数处理后，原子在z方向上的位置将被保留，这样就可以灵活处理不同高度的晶胞叠加。
     auto [min_z1, max_z1] = get_min_max_z(bottom);
     auto [min_z2, max_z2] = get_min_max_z(top);
     translate_atoms_z(bottom, -min_z1);
@@ -280,9 +282,10 @@ Atoms stack_atoms(Atoms bottom, Atoms top, double &weight, double &distance, dou
         }
     }
     newcell[2][2] = bottom.lattice[2][2];
-    bottom.scale_cell(newcell);
-    top.scale_cell(newcell);
+    bottom.scale_cell_xy(newcell);
+    top.scale_cell_xy(newcell);
     Atoms stack = bottom + top;
     stack.lattice[2][2] = bottom_thickness + top_thickness + distance + vacuum;
     return stack;
 };
+

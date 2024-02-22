@@ -66,13 +66,41 @@ double2dvec_t Atoms::scaled_positions_to_cartesian(double2dvec_t &scalpos)
 };
 
 // Scales cell of atoms object to size of newcell and adjusts cartesian atomic positions.
-void Atoms::scale_cell(double2dvec_t &newcell)
+//void Atoms::scale_cell(double2dvec_t &newcell)
+//{
+//    double2dvec_t scal_pos = this->get_scaled_positions();
+//    this->lattice = newcell;
+//    double2dvec_t cart_pos = this->scaled_positions_to_cartesian(scal_pos);
+//    this->positions = cart_pos;
+//};
+
+//在修改晶胞（lattice）时确保不改变原子在z方向上的笛卡尔坐标。基本思路是，当您从分数坐标回转换为笛卡尔坐标时，保留z方向上的原始笛卡尔坐标而不是使用转换后的值。
+//此代码逻辑保持x和y方向上的位置根据新的晶胞矩阵进行按比例调整，同时保留原子在z方向上的笛卡尔坐标不变。这种方法允许晶胞在xy平面内自由变化，同时在z方向上维持原子的绝对位置，这对于某些表面或界面模型而言是非常有用的。
+void Atoms::scale_cell_xy(double2dvec_t &newcell)
 {
-    double2dvec_t scal_pos = this->get_scaled_positions();
+    // 获取原始的笛卡尔坐标
+    double2dvec_t original_cart_pos = this->positions; 
+
+    // 获取按新晶胞缩放的分数坐标
+    double2dvec_t scal_pos = this->get_scaled_positions(); 
+
+    // 更新晶胞
     this->lattice = newcell;
-    double2dvec_t cart_pos = this->scaled_positions_to_cartesian(scal_pos);
-    this->positions = cart_pos;
-};
+
+    // 将缩放的分数坐标转换回笛卡尔坐标
+    double2dvec_t updated_cart_pos = this->scaled_positions_to_cartesian(scal_pos);
+
+    // 保持z方向上的笛卡尔坐标不变
+    for (int i = 0; i < updated_cart_pos.size(); ++i)
+    {
+        // 保留z方向上的原始笛卡尔坐标
+        updated_cart_pos[i][2] = original_cart_pos[i][2];
+    }
+
+    // 更新原子的位置
+    this->positions = updated_cart_pos;
+}
+
 
 // Overload + operator to add two Atoms objects.
 Atoms Atoms::operator+(const Atoms &b)

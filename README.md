@@ -24,7 +24,7 @@ conda env create -n hetbuilder python=3.11
 
 Then install the build-time dependencies first:
 ```bash
-conda install -c conda-forge compilers git pip cmake scikit-build spglib=2.1.0 pybind11=2.11.1
+conda install -c conda-forge compilers git pip cmake scikit-build spglib pybind11
 ```
 
 <!-- Then, you can install the project from pip:
@@ -40,7 +40,7 @@ pip install git+https://github.com/romankempt/hetbuilder.git
 
 #### Development Installation with Anaconda
 
-After creating the same environment, nstall `conda-build`:
+After creating the same environment, install `conda-build`:
 ```bash
 conda install conda-build
 ```
@@ -57,7 +57,7 @@ cp hetbuilder_backend.*.so ../hetbuilder/
 
 The last step is necessary so that the C++ extension is found in the module directory.
 
-## First steps
+## Usage via CLI
 
 The installation exposes a multi-level [typer](https://github.com/tiangolo/typer) CLI utility called `hetbuilder`:
 
@@ -102,14 +102,3 @@ If you use this tool, please cite 10.5281/zenodo.4721346.
 - [pybind11](https://github.com/pybind/pybind11)
 - [typer](https://github.com/tiangolo/typer)
 
-
-## Known Issues
-
-1. `error: '::timespec_get' has not been declared` [see here](https://root-forum.cern.ch/t/error-timespec-get-has-not-been-declared-with-conda-root-package/45712). 
-In this case, the solution seems to be to run `conda upgrade -c conda-forge --all`.
-2. Installation troubles, e.g., with spglib:
-   - Try to update your conda forge packages:
-   - `conda config --add channels conda-forge`
-   - `conda config --set channel_priority strict`
-   - `conda update --all`
-   - `conda install -c conda-forge spglig`

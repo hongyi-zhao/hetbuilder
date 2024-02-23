@@ -251,6 +251,63 @@ std::tuple<double, double> get_min_max_z(Atoms &atoms)
     return std::make_tuple(min_z, max_z);
 };
 
+
+
+// 进一步简化的考虑：  
+// 当只考虑xy平面进行操作时，且希望采用类似 latticeA + weight * (latticeB - latticeA) 的简化表达式进行矩阵运算，我们可以通过将z轴方向的组件保持不变来实现这一点。这意味着你只对矩阵的前两行（代表xy平面的向量）进行操作，而第三行（代表z轴的向量）保持原样不变。
+
+//在NumPy中的实现：
+
+//如果你使用Python和NumPy，可以通过选择性地修改数组的一部分来实现这一点：
+
+//import numpy as np
+
+//# 假设 latticeA 和 latticeB 是两个3x3的NumPy数组
+//latticeA = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
+//latticeB = np.array([[9, 8, 7], [6, 5, 4], [3, 2, 1]])
+
+//weight = 0.5  # 插值权重
+
+//# 只对前两行进行操作
+//newcell = latticeA.copy()  # 创建一个副本以保留原始数据
+//newcell[:2] = latticeA[:2] + weight * (latticeB[:2] - latticeA[:2])
+
+//print(newcell)
+
+// 
+//在Eigen(C++)中的实现：
+
+//在C++中，如果你使用Eigen库，可以通过对矩阵的特定行进行操作来实现相似的逻辑：
+
+//#include <Eigen/Dense>
+//#include <iostream>
+
+//int main() {
+//    Eigen::Matrix3d latticeA;
+//    Eigen::Matrix3d latticeB;
+
+//    // 填充latticeA和latticeB为示例数据
+//    latticeA << 1, 2, 3, 4, 5, 6, 7, 8, 9;
+//    latticeB << 9, 8, 7, 6, 5, 4, 3, 2, 1;
+
+//    double weight = 0.5; // 插值权重
+
+//    // 创建一个新的矩阵以存储结果，初始值为latticeA
+//    Eigen::Matrix3d newcell = latticeA;
+
+//    // 只修改前两行，对应于xy平面
+//    newcell.block<2,3>(0,0) = latticeA.block<2,3>(0,0) + weight * (latticeB.block<2,3>(0,0) - latticeA.block<2,3>(0,0));
+
+//    std::cout << "Newcell matrix:\n" << newcell << std::endl;
+
+//    return 0;
+//}
+
+// 
+
+//在这两种情况下，我们都通过仅对代表xy平面的矩阵部分进行操作，同时保留z轴方向（即第三行/列）的数据不变，来实现了只考虑xy平面的矩阵运算。这种方法允许你在保持z轴信息不变的同时，灵活地调整xy平面的参数。
+// 
+
 /**
  * Stacks two Atoms objects on top of each other with an interlayer distance given by distance.
  *
@@ -261,8 +318,9 @@ std::tuple<double, double> get_min_max_z(Atoms &atoms)
 Atoms stack_atoms(Atoms bottom, Atoms top, double &weight, double &distance, double &vacuum)
 {
  
-//  scale_cell_xy 函数中实现了保持z方向笛卡尔坐标不变的逻辑，那么确保两个晶胞在开始时具有相同的初始c轴长度就不再是必需的。
-//    因为即使两个晶胞在z方向上的长度不同，经过 scale_cell_xy 函数处理后，原子在z方向上的位置将被保留，这样就可以灵活处理不同高度的晶胞叠加。
+// In 2D heterostructure interfaces, these scalings occur on the xy plane, thus necessitating the use of the logic implemented in the scale_cell_xy function to scale while keeping the z-direction Cartesian coordinates unchanged.
+    
+    // Adjusting z positions based on the thickness of the bottom and top layers
     auto [min_z1, max_z1] = get_min_max_z(bottom);
     auto [min_z2, max_z2] = get_min_max_z(top);
     translate_atoms_z(bottom, -min_z1);
@@ -271,19 +329,21 @@ Atoms stack_atoms(Atoms bottom, Atoms top, double &weight, double &distance, dou
     double shift = -min_z2 + bottom_thickness + distance;
     translate_atoms_z(top, shift);
 
+    // Interpolating lattice vectors for the combined structure
     double2dvec_t latticeA = bottom.lattice;
     double2dvec_t latticeB = top.lattice;
     double2dvec_t newcell(3, std::vector<double>(3, 0));
-    for (int i = 0; i < 3; i++)
+    for (int i = 0; i < 2; i++)
     {
-        for (int j = 0; j < 3; j++)
+        for (int j = 0; j < 2; j++)
         {
             newcell[i][j] = latticeA[i][j] + weight * (latticeB[i][j] - latticeA[i][j]);
         }
     }
-    newcell[2][2] = bottom.lattice[2][2];
     bottom.scale_cell_xy(newcell);
     top.scale_cell_xy(newcell);
+    
+    // Stacking the bottom and top layers
     Atoms stack = bottom + top;
     stack.lattice[2][2] = bottom_thickness + top_thickness + distance + vacuum;
     return stack;

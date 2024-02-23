@@ -345,7 +345,7 @@ Atoms stack_atoms(Atoms bottom, Atoms top, double &weight, double &distance, dou
     
     // Stacking the bottom and top layers
     Atoms stack = bottom + top;
-    stack.lattice[2][2] = bottom_thickness + top_thickness + distance + vacuum;
+    stack.lattice[2][2] = bottom_thickness + distance + top_thickness + vacuum;
     return stack;
 };
 

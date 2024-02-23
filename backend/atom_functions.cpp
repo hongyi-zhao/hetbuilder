@@ -318,7 +318,7 @@ std::tuple<double, double> get_min_max_z(Atoms &atoms)
 Atoms stack_atoms(Atoms bottom, Atoms top, double &weight, double &distance, double &vacuum)
 {
  
-// In 2D heterostructure interfaces, these scalings occur on the xy plane, thus necessitating the use of the logic implemented in the scale_cell_xy function to scale while keeping the z-direction Cartesian coordinates unchanged.
+// In 2D heterostructure interfaces, these scalings occur on the xy plane, thus necessitating the logic implemented in the scale_cell_xy function to scale while keeping the z-direction Cartesian coordinates unchanged.
     
     // Adjusting z positions based on the thickness of the bottom and top layers
     auto [min_z1, max_z1] = get_min_max_z(bottom);

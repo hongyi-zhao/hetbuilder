@@ -1,9 +1,5 @@
 # Hetbuilder - builds heterostructure interfaces
 
-[![DOI](https://zenodo.org/badge/358881237.svg)](https://zenodo.org/badge/latestdoi/358881237)
-[![Documentation Status](https://readthedocs.org/projects/hetbuilder/badge/?version=latest)](https://hetbuilder.readthedocs.io/en/latest/?badge=latest)
-[![PyPI version](https://badge.fury.io/py/hetbuilder.svg)](https://badge.fury.io/py/hetbuilder)
-
 Builds 2D heterostructure interfaces via coincidence lattice theory.
 
 ## Installation
@@ -15,47 +11,28 @@ Requires a C++17 compiler and [cmake](https://cmake.org/).
 It is also recommended to preinstall [spglib](https://atztogo.github.io/spglib/python-spglib.html) and [pybind11](https://github.com/pybind/pybind11).
 Otherwise, these will be built during the installation from the submodules.
 
-#### Installing with Anaconda (or use pyenv, venv, etc.)
+#### Installing with pyenv, venv, or virtualenv etc.
 
-Create a clean conda environment:
 ```bash
-$ conda env create -n hetbuilder python=3.11
+$ git clone https://github.com/hongyi-zhao/hetbuilder.git && cd hetbuilder
+$ pyenv shell 3.11.1
+$ pyenv virtualenv hetbuilder
+$ pyenv shell hetbuilder
+$ pip install -r requirements.txt
+$ pip install .  
 ```
 
-Then install the build-time dependencies first:
-```bash
-$ conda install -c conda-forge compilers git pip cmake scikit-build spglib pybind11
-```
-
-<!-- Then, you can install the project from pip:
-```bash
-$ pip install hetbuilder
-```
--->
-
-Install directly from git via pip:
-```bash
-$ pip install git+https://github.com/hongyi-zhao/hetbuilder.git
-```
-
-#### Development Installation with Anaconda (or use pyenv, venv, etc.)
-
-After creating the same environment, install `conda-build`:
-```bash
-$ conda install conda-build
-```
+#### Development Installation with pyenv, venv, or virtualenv etc.
 
 Download or clone the github repository. Then, `cd` to the repository and
 ```bash
 $ pip install -r requirements.txt
-$ conda develop .
 $ mkdir build
 $ cd build
 $ cmake .. && make
 $ cp hetbuilder_backend.*.so ../hetbuilder/
+$ cd .. && pip install -e .
 ```
-
-The last step is necessary so that the C++ extension is found in the module directory.
 
 ## Usage via CLI
 

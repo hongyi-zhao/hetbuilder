@@ -239,6 +239,33 @@ class Interface:
         # return (stress, P1 - np.identity(2), P2 - np.identity(2))
         return stress
 
+    # def measure_strain(self) -> float:
+        # """Measures the average strain on bond lengths on both substructures."""
+        # bond_lengths = self.bond_lengths
+        # bottom_strain = []
+        # top_strain = []
+        # for (k1, b1) in bond_lengths.items():
+            # for k3, b3 in self.bbl.items():
+                # if (k3 == k1) or (k3[::-1] == k1):
+                    # d = np.abs((b3 - b1)) / b1 * 100
+                    # bottom_strain.append(d)
+            # for k3, b3 in self.tbl.items():
+                # if (k3 == k1) or (k3[::-1] == k1):
+                    # d = np.abs((b3 - b1)) / b1 * 100
+                    # top_strain.append(d)
+        # strain = np.average(bottom_strain) + np.average(top_strain)
+        # return strain
+    
+    
+    #To modify the measure_strain method according to the provided definition and
+    #correctly handle potential issues (like divisions by zero or cases where bottom_strain
+    #or top_strain lists are empty, which would lead to nan values), you can update the method to include checks for these cases:
+    
+    #In this updated version, the method now includes checks to avoid division by zero when calculating the strain differences.
+    #Additionally, it handles cases where either bottom_strain or top_strain lists might be empty, which would previously result
+    #in np.average returning nan. By providing default values (in this case, 0), you ensure that the method returns a valid numerical
+    #value even when no strain data is available, thus avoiding the generation of nan values that could lead to errors in subsequent calculations.
+
     def measure_strain(self) -> float:
         """Measures the average strain on bond lengths on both substructures."""
         bond_lengths = self.bond_lengths
@@ -247,14 +274,30 @@ class Interface:
         for (k1, b1) in bond_lengths.items():
             for k3, b3 in self.bbl.items():
                 if (k3 == k1) or (k3[::-1] == k1):
-                    d = np.abs((b3 - b1)) / b1 * 100
-                    bottom_strain.append(d)
+                    if b1 != 0:  # Check to avoid division by zero
+                        d = np.abs((b3 - b1)) / b1 * 100
+                        bottom_strain.append(d)
             for k3, b3 in self.tbl.items():
                 if (k3 == k1) or (k3[::-1] == k1):
-                    d = np.abs((b3 - b1)) / b1 * 100
-                    top_strain.append(d)
-        strain = np.average(bottom_strain) + np.average(top_strain)
+                    if b1 != 0:  # Check to avoid division by zero
+                        d = np.abs((b3 - b1)) / b1 * 100
+                        top_strain.append(d)
+    
+        # Handle cases where strain lists are empty to avoid 'nan' values
+        if bottom_strain:
+            avg_bottom_strain = np.average(bottom_strain)
+        else:
+            avg_bottom_strain = 0  # Default value or another suitable value
+    
+        if top_strain:
+            avg_top_strain = np.average(top_strain)
+        else:
+            avg_top_strain = 0  # Default value or another suitable value
+    
+        # Calculate total average strain
+        strain = avg_bottom_strain + avg_top_strain
         return strain
+    
 
     @property
     def bonds(self):

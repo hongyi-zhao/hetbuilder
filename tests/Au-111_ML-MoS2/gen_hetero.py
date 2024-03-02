@@ -15,7 +15,7 @@ from os.path import exists, join
 from shutil import rmtree
 
 # Define the name of the directory for storing generated files
-output_directory = "generated_files"
+output_directory = "results"
 
 # Check if the directory exists, remove it if it does, then create a new one
 if exists(output_directory):

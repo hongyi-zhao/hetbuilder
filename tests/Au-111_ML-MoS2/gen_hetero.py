@@ -15,20 +15,34 @@ from os.path import exists, join
 from shutil import rmtree
 
 # Define the name of the directory for storing generated files
-output_directory = "results"
+#output_directory = "results"
 
 # Check if the directory exists, remove it if it does, then create a new one
-if exists(output_directory):
-    rmtree(output_directory)
-makedirs(output_directory)
+#if exists(output_directory):
+#    rmtree(output_directory)
+#makedirs(output_directory)
+
+# 基于现有数据库的优化结果，进一步用适当算法过滤分析合理大小的超胞结构。
+# 从MS中构建相应面，再看能否得到更小的匹配超胞。
 
 # Create a surface generator instance from a CIF file
 subs = SurfaceGenerator.from_file(
-    "Au_mp-81.cif",
+#    "Au_mp-81.cif",
+    # 这个的111面，hetbuilder: raise Exception("Structure does not appear to be 2d.")
+    "Au_mc3d_sg229.cif",
     miller_index=[1, 1, 1],  # Specify the Miller index for the surface
     layers=1,                # Number of layers in the generated surface
     vacuum=15,                # Vacuum spacing around the surface
-    # refine_structure=False  # Don't refine the initial structure; uncomment if needed
+    refine_structure=False  # Don't refine the initial structure; uncomment if needed
+)
+
+
+films = SurfaceGenerator.from_file(
+    "MoS2_mp-1434.cif",
+    miller_index=[0, 0, 1],  # Specify the Miller index for the surface
+    layers=1,                # Number of layers in the generated surface
+    vacuum=15,                # Vacuum spacing around the surface
+    refine_structure=False  # Don't refine the initial structure; uncomment if needed
 )
 
 # Save the path for the generated file to avoid repetition
@@ -53,12 +67,44 @@ subs = SurfaceGenerator.from_file(
 from ase import Atoms
 import numpy as np
 
-# 假设已经有了_subs._slabs[0]._orthogonal_slab_structure的实例
-structure = subs._slabs[0]._orthogonal_slab_structure
+sub = subs._slabs[0]._orthogonal_slab_structure
+sub_cell_matrix = sub.lattice.matrix
+sub_positions = [site.coords for site in sub]
+sub_symbols = [site.specie.symbol for site in sub]
 
-# 提取晶胞参数
-cell_matrix = structure.lattice.matrix
+film = films._slabs[0]._orthogonal_slab_structure
+film_cell_matrix = film.lattice.matrix
+film_positions = [site.coords for site in film]
+film_symbols = [site.specie.symbol for site in film]
 
+# 创建ase.Atoms对象
+bottom = Atoms(symbols=sub_symbols, positions=sub_positions, cell=sub_cell_matrix, pbc=True)
+#top = Atoms(symbols=film_symbols, positions=film_positions, cell=film_cell_matrix, pbc=True)
+
+#https://www.materialscloud.org/discover/mc2d/details/MoS2
+top = read("MoS2_mc2d.cif")
+
+
+# 现在可以直接使用这个atoms对象或使用上面的read方法来进一步处理：
+alg = CoincidenceAlgorithm(bottom, top)
+
+# Run the algorithm with a set of parameters
+results = alg.run(tolerance=0.2)
+
+#for i, res in enumerate(results):
+#    # Save generated files in the specified directory
+#    stack = join(output_directory, str(res.stack.symbols))
+#    res.stack.write(stack, format='vasp')
+
+# Set up paths for the interactive plot
+iplot = InteractivePlot(bottom=bottom, top=top, results=results, weight=0.5)
+iplot.plot_results()
+
+# if True:
+    # pass
+    
+    
+    
 # 创建ase.Atoms对象时，下面这些方法分别等价吗？
 #In [20]: [site.coords for site in structure.sites]
 #Out[20]: [array([0.      , 0.      , 8.429029])]
@@ -92,31 +138,4 @@ cell_matrix = structure.lattice.matrix
 
 #两种方式都成功提取了原子的元素符号，结果表明结构中包含的元素为金（Au）。虽然这些方法在操作上有所不同，但它们都达到了相同的目的。在创建ase.Atoms对象时，您可以根据实际情况选择最适合您需求的方法来提取所需的信息。
 
-
-
-# 提取原子位置和元素符号
-positions = [site.coords for site in structure]
-symbols = [site.specie.symbol for site in structure]
-
-# 创建ase.Atoms对象
-bottom = Atoms(symbols=symbols, positions=positions, cell=cell_matrix, pbc=True)
-
-top = read("MoS2_2H_1L.xyz")  # Initial file, path remains unchanged
-
-# 现在可以直接使用这个atoms对象或使用上面的read方法来进一步处理：
-alg = CoincidenceAlgorithm(bottom, top)
-
-# Run the algorithm with a set of parameters
-results = alg.run(tolerance=0.15)
-
-for i, res in enumerate(results):
-    # Save generated files in the specified directory
-    stack = join(output_directory, str(res.stack.symbols))
-    res.stack.write(stack, format='vasp')
-
-# Set up paths for the interactive plot
-iplot = InteractivePlot(bottom=bottom, top=top, results=results, weight=0.5)
-iplot.plot_results()
-
-# if True:
-    # pass
+    

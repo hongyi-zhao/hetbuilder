@@ -14,7 +14,7 @@ Otherwise, these will be built during the installation from the submodules.
 #### Installing with pyenv, venv, or virtualenv etc.
 
 ```bash
-$ sudo apt-get update && sudo apt install -y build-essential cmake git python3-dev python3-tk
+$ sudo apt update && sudo apt install -y build-essential cmake git python3-dev python3-tk
 $ git clone https://github.com/hongyi-zhao/hetbuilder.git && cd hetbuilder
 $ pyenv shell 3.11.1
 $ pyenv virtualenv hetbuilder

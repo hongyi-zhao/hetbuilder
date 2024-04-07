@@ -353,7 +353,7 @@ class CoincidenceAlgorithm:
             Nmax (int): Maximum number of translations. Defaults to 10.
             Nmin (int): Minimum number of translations. Defaults to 0.
             angles (list): List of angles in degree to search. Takes precedence over angle_limits and angle_stepsize.
-            angle_limits (tuple): Lower and upper bound of angles too look through with given step size by angle_stepsize. Defaults to (0, 90) degree.
+            angle_limits (tuple): Lower and upper bound of angles to look through with given step size by angle_stepsize. Defaults to (0, 90) degree.
             angle_stepsize (float): Increment of angles to look through. Defaults to 1.0 degree.
             tolerance (float): Tolerance criterion to accept lattice match. Corresponds to a distance in Angström. Defaults to 0.1.
             weight (float): The coincidence unit cell is C = A + weight * (B-A). Defaults to 0.5.

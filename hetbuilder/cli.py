@@ -68,7 +68,7 @@ def build(
         (0, 90),
         "-al",
         "--angle_limits",
-        help="Lower and upper bound of angles too look through with given step size.",
+        help="Lower and upper bound of angles to look through with given step size.",
     ),
     angles: List[float] = typer.Option(
         [],

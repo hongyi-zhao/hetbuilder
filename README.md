@@ -14,7 +14,7 @@ Otherwise, these will be built during the installation from the submodules.
 #### Installing with pyenv, venv, or virtualenv etc.
 
 ```bash
-$ sudo apt update && sudo apt install -y build-essential cmake git python3-dev python3-tk libsymspg-dev
+$ sudo apt update && sudo apt install -y build-essential git pip cmake python3-dev python3-tk pybind11-dev libsymspg-dev
 $ git clone https://github.com/hongyi-zhao/hetbuilder.git && cd hetbuilder
 $ pyenv shell 3.11.1
 $ pyenv virtualenv hetbuilder

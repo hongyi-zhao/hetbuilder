@@ -94,6 +94,9 @@ def build(
     vacuum: float = typer.Option(
         15, "-v", "--vacuum", help="Thickness of the vacuum layer of the heterostructure in Angström."
     ),
+    standardize: bool = typer.Option(
+        False, "--standardize", help="Disable performing spglib standardization."
+    ),
     no_idealize: bool = typer.Option(
         False, "--no_idealize", help="Disable idealize lattice parameters via spglib."
     ),
@@ -129,8 +132,10 @@ def build(
         angle_limits=angle_limits,
         angle_stepsize=angle_stepsize,
         tolerance=tolerance,
+        weight=weight,
         distance=distance,
         vacuum=vacuum,
+        standardize=standardize,
         no_idealize=no_idealize,
         symprec=symprec,
         angle_tolerance=angle_tolerance,

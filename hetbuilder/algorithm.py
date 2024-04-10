@@ -359,7 +359,7 @@ class CoincidenceAlgorithm:
             weight (float): The coincidence unit cell is C = A + weight * (B-A). Defaults to 0.5.
             distance (float): Interlayer distance of the stacks. Defaults to 4.0 Angström.
             vacuum (float): Thickness of the vacuum layer of the stacks. Defaults to 15.0 Angström.
-            standardize (bool): Perform spglib standardization. Defaults to true.
+            standardize (bool): Perform spglib standardization. Defaults to False.
             no_idealize (bool): Does not idealize unit cell parameters in the spglib standardization routine. Defaults to False.
             symprec (float): Symmetry precision for spglib. Defaults to 1e-5 Angström.
             angle_tolerance (float): Angle tolerance fo the spglib `spgat` routines. Defaults to 5.

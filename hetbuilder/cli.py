@@ -60,7 +60,7 @@ def build(
     Nmax: int = typer.Option(
         10, "-N", "--Nmax", help="Maximum number of translations."
     ),
-    Nmin: int = typer.Option(0, "--Nmin", help="Minimum number of translations."),
+    Nmin: int = typer.Option(0, "-n", "--Nmin", help="Minimum number of translations."),
     angle_stepsize: float = typer.Option(
         1, "-as", "--angle_stepsize", help="Increment of angles to look through."
     ),
@@ -95,16 +95,16 @@ def build(
         15, "-v", "--vacuum", help="Thickness of the vacuum layer of the heterostructure in Angström."
     ),
     standardize: bool = typer.Option(
-        False, "--standardize", help="Perform spglib standardization. [default: False]."
+        False, "-st", "--standardize", help="Perform spglib standardization. [default: False]."
     ),
     no_idealize: bool = typer.Option(
-        False, "--no_idealize", help="Does not idealize unit cell parameters in the spglib standardization routine. [default: False]."
+        False, "-ni", "--no_idealize", help="Does not idealize unit cell parameters in the spglib standardization routine. [default: False]."
     ),
     symprec: float = typer.Option(
         1e-5, "-sp", "--symprec", help="Symmetry precision for spglib."
     ),
     angle_tolerance: float = typer.Option(
-        5, "--angle_tolerance", help="Angle tolerance for spglib."
+        5, "-at", "--angle_tolerance", help="Angle tolerance for spglib."
     ),
     verbosity: int = typer.Option(
         1, "--verbosity", "-V", count=True, help="Set verbosity level."

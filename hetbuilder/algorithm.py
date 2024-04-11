@@ -309,6 +309,23 @@ class Interface:
         return self._bond_lengths
 
 
+#相比于backend/coincidence_algorithm.cpp 中的原型函数：
+#std::vector<Interface> CoincidenceAlgorithm::run(int Nmax,
+#                                                 int Nmin,
+#                                                 double1dvec_t angles,
+#                                                 double tolerance,
+#                                                 double weight,
+#                                                 double distance,
+#                                                 double vacuum,
+#                                                 bool standardize,
+#                                                 int no_idealize,
+#                                                 double symprec,
+#                                                 double angle_tolerance,
+#                                                 int verbose)
+#
+# 此处进行了进一步的封装， 为了方便调用和控制，添加了下面的两个参数： 
+#        angle_limits: tuple = (0, 90),
+#        angle_stepsize: float = 1.0,
 class CoincidenceAlgorithm:
     """Exposes the C++ implementation of the CppCoincidenceAlgorithmClass.
     
@@ -362,7 +379,7 @@ class CoincidenceAlgorithm:
             standardize (bool): Perform spglib standardization. Defaults to False.
             no_idealize (bool): Does not idealize unit cell parameters in the spglib standardization routine. Defaults to False.
             symprec (float): Symmetry precision for spglib. Defaults to 1e-5 Angström.
-            angle_tolerance (float): Angle tolerance fo the spglib `spgat` routines. Defaults to 5.
+            angle_tolerance (float): Angle tolerance for the spglib `spgat` routines. Defaults to 5.
             verbosity (int): Debug level for printout of Coincidence Algorithm. Defaults to 0.
 
         Returns:

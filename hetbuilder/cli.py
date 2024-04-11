@@ -68,25 +68,25 @@ def build(
         (0, 90),
         "-al",
         "--angle_limits",
-        help="Lower and upper bound of angles to look through with given step size.",
+        help="Lower and upper bound of angles to look through with given step size. Specify as two floats separated by a space."
     ),
     angles: List[float] = typer.Option(
         [],
         "-a",
-        "--angle",
-        help="Explicitely set angle to look for. Can be called multiple times.",
+        "--angles",
+        help="Explicitly list of angles to look for. Can be called multiple times."
     ),
     tolerance: float = typer.Option(
         0.1,
         "-t",
         "--tolerance",
-        help="Tolerance criterion to accept matching lattice points in Angström.",
+        help="Tolerance criterion to accept matching lattice points in Angström."
     ),
     weight: float = typer.Option(
         0.5,
         "-w",
         "--weight",
-        help="Weight of the coincidence unit cell, given by C=A+weight*(B-A).",
+        help="Weight of the coincidence unit cell, given by C = A + weight * (B - A).",
     ),
     distance: float = typer.Option(
         4, "-d", "--distance", help="Interlayer distance of the heterostructure in Angström."
@@ -95,10 +95,10 @@ def build(
         15, "-v", "--vacuum", help="Thickness of the vacuum layer of the heterostructure in Angström."
     ),
     standardize: bool = typer.Option(
-        False, "--standardize", help="Disable performing spglib standardization."
+        False, "--standardize", help="Perform spglib standardization. [default: False]."
     ),
     no_idealize: bool = typer.Option(
-        False, "--no_idealize", help="Disable idealize lattice parameters via spglib."
+        False, "--no_idealize", help="Does not idealize unit cell parameters in the spglib standardization routine. [default: False]."
     ),
     symprec: float = typer.Option(
         1e-5, "-sp", "--symprec", help="Symmetry precision for spglib."

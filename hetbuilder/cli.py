@@ -55,8 +55,8 @@ def callback(
 )
 def build(
     ctx: typer.Context,
-    lower: Path = typer.Argument(..., help="Path to lower layer structure file."),
-    upper: Path = typer.Argument(..., help="Path to upper layer structure file."),
+    bottom: Path = typer.Argument(..., help="Path to bottom layer structure file."),
+    top: Path = typer.Argument(..., help="Path to top layer structure file."),
     Nmax: int = typer.Option(
         10, "-N", "--Nmax", help="Maximum number of translations."
     ),
@@ -86,7 +86,7 @@ def build(
         0.5,
         "-w",
         "--weight",
-        help="Weight of the coincidence unit cell, given by C = A + weight * (B - A).",
+        help="Weight to construct the lattice of the coincidence unit cell, given by C=A+weight*(B-A), where A is the lattice of bottom and B is the lattice of top."
     ),
     distance: float = typer.Option(
         4, "-d", "--distance", help="Interlayer distance of the heterostructure in Angström."
@@ -116,8 +116,8 @@ def build(
         hetbuilder build graphene.xyz MoS2.xyz -N 10 -al 0 30 -as 0.1
     """
     set_verbosity_level(verbosity)
-    bottom = ase.io.read(lower)
-    top = ase.io.read(upper)
+    bottom = ase.io.read(bottom)
+    top = ase.io.read(top)
     logger.info(
         "Building heterostructures from {} and {}.".format(
             bottom.get_chemical_formula(), top.get_chemical_formula()

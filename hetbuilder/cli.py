@@ -89,7 +89,7 @@ def build(
         help="Weight to construct the lattice of the coincidence unit cell, given by C=A+weight*(B-A), where A is the lattice of bottom and B is the lattice of top."
     ),
     distance: float = typer.Option(
-        4, "-d", "--distance", help="Interlayer distance of the heterostructure in Angström."
+        3.5, "-d", "--distance", help="Interlayer distance of the heterostructure in Angström."
     ),
     vacuum: float = typer.Option(
         15, "-v", "--vacuum", help="Thickness of the vacuum layer of the heterostructure in Angström."

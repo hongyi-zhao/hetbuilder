@@ -1,0 +1,6 @@
+By Jun-Pei
+
+就是这个异质结搜索完，咱最好再加一步 find primitive cell。因为我发现他搜索完，有一个正交胞600多原子，find primitive 以后123个原子。可能是他去除重复结构那一步，把小晶胞的给去掉了，也可能是它压根没识别到小晶胞。
+
+
+这个find_prim可以用别的函数，我是自己把ase的atoms转换成了spglib里面的类型，然后便于使用它搜索prim的函数

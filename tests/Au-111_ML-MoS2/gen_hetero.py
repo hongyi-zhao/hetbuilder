@@ -77,6 +77,11 @@ film_cell_matrix = film.lattice.matrix
 film_positions = [site.coords for site in film]
 film_symbols = [site.specie.symbol for site in film]
 
+# See ~/.wingpro10/preferences for the related settings used by me.
+
+# Compared to PyCharm, Wing's "Stack Data" can only provide very limited data.
+# https://ask.wingware.com/question/8650/compared-to-pycharm-wings-stack-data-can-only-provide-very-limited-data/
+
 # 创建ase.Atoms对象
 bottom = Atoms(symbols=sub_symbols, positions=sub_positions, cell=sub_cell_matrix, pbc=True)
 #top = Atoms(symbols=film_symbols, positions=film_positions, cell=film_cell_matrix, pbc=True)

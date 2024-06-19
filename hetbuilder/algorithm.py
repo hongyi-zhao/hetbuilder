@@ -5,6 +5,7 @@ from ase.geometry import permute_axes
 from ase.geometry.analysis import Analysis
 
 from itertools import combinations_with_replacement
+from scipy.spatial import KDTree
 
 from dataclasses import dataclass
 
@@ -92,7 +93,7 @@ def check_angles(
         logger.error("Angle specifications not recognized.")
 
 
-def get_bond_data(atoms: "ase.atoms.Atoms", return_bonds=True) -> tuple:
+def get_bond_data(atoms: "ase.atoms.Atoms", return_bonds: bool = True) -> tuple:
     """ Returns a tuple holding bond indices and average bond values.
     
     If the input structure is larger than 1000 atoms, the neighborlist is not computed and not all bonds are determined.
@@ -104,22 +105,21 @@ def get_bond_data(atoms: "ase.atoms.Atoms", return_bonds=True) -> tuple:
 
     if len(atoms) > 1000 or return_bonds == False:
         # not computing neighborlists for all bonds here, too slow
-        from scipy.spatial import KDTree
-
         return_bonds = False
         s1 = set(atoms.get_chemical_symbols())
-        s2 = {}
+        s2 = set()
         i = 1
         p = atoms.positions
         tree = KDTree(atoms.positions)
         middle = np.mean(p, axis=0)
         middle[2] = np.min(p[:, 2])  # so we are not searching in vacuum
-        while s1 != s2 and i < 4:
-            sample = tree.query_ball_point(middle, r=i * 10)
+        while s1 != s2 and i < 5:  # 增加最大迭代次数
+            sample = tree.query_ball_point(middle, r=i * 15)  # 增加采样半径
             subatoms = atoms[sample]
             s2 = set(subatoms.get_chemical_symbols())
+#            print(f"Iteration {i}: Found symbols {s2}")
             i += 1
-            if i == 3:
+            if i == 5:
                 raise Exception(
                     "Could not find all species in the subquery. This should not happen."
                 )
@@ -127,10 +127,9 @@ def get_bond_data(atoms: "ase.atoms.Atoms", return_bonds=True) -> tuple:
         atoms = subatoms
 
     pairs = list(combinations_with_replacement(symbs, 2))
-    cutoffs = np.array(natural_cutoffs(atoms)) * 1.25
+    cutoffs = np.array(natural_cutoffs(atoms)) * 1.25  # 增加截断半径
     nl = NeighborList(cutoffs, skin=0.0, primitive=NewPrimitiveNeighborList)
     nl.update(atoms)
-    ana = Analysis(atoms, nl=nl)
 
     if return_bonds:
         nbonds = nl.nneighbors + nl.npbcneighbors
@@ -145,12 +144,25 @@ def get_bond_data(atoms: "ase.atoms.Atoms", return_bonds=True) -> tuple:
 
     unique_bonds = {}
     for p in pairs:
-        anabonds = ana.get_bonds(*p)
-        if anabonds == [[]]:
-            continue
-        bond_values = ana.get_values(anabonds)
-        avg = np.average(bond_values)
-        unique_bonds[p] = avg
+        bond_lengths = []
+        for a in range(len(atoms)):
+            indices, offsets = nl.get_neighbors(a)
+            for i, offset in zip(indices, offsets):
+                if {atoms[a].symbol, atoms[i].symbol} == set(p):
+                    startvector = atoms.positions[a]
+                    endvector = atoms.positions[i] + offset @ atoms.get_cell()
+                    bond_length = np.linalg.norm(endvector - startvector)
+                    if bond_length > 0:  # 过滤掉键长为 0 的键
+                        bond_lengths.append(bond_length)
+#                        print(f"Bond found: {atoms[a].symbol}-{atoms[i].symbol} with length {bond_length:.2f} Å")
+#                    else:
+#                        print(f"Bond length 0 Å found: {atoms[a].symbol}-{atoms[i].symbol}")
+        if bond_lengths:
+            avg = np.average(bond_lengths)
+            unique_bonds[p] = avg
+#        else:
+#            print(f"No bonds found for pair: {p}")
+
     return bonds, unique_bonds
 
 
